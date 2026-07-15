@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Love</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet" />
+
+    <style>
+      :root{
+        --pink: rgba(255, 122, 182, 0.95);
+        --text: rgba(255,255,255,0.95);
+      }
+      *{ box-sizing: border-box; }
+      html, body { height: 100%; }
+
+      body{
+        margin:0;
+        overflow:hidden;
+        font-family: "Comic Neue", "Comic Sans MS", Arial, sans-serif;
+        color: var(--text);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        position:relative;
+
+        background: radial-gradient(circle at 20% 10%, #ffe6f3, #ffd6e7 35%, #f7c8ff 70%, #d9f6ff);
+      }
+
+      /* Blended collage background (all your images) */
+      body::before{
+        content:"";
+        position:absolute;
+        inset:-60px;
+        z-index:-2;
+        background-image:
+          url("./../WhatsApp Image 2026-07-16 at 04.47.44.jpeg"),
+          url("./../WhatsApp Image 2026-07-16 at 04.47.50.jpeg"),
+          url("./../WhatsApp Image 2026-07-16 at 04.47.57.jpeg"),
+          url("./../WhatsApp Image 2026-07-16 at 04.48.02.jpeg"),
+          url("./../WhatsApp Image 2026-07-16 at 04.48.05.jpeg"),
+          url("./../WhatsApp Image 2026-07-16 at 04.48.07.jpeg"),
+          url("./../WhatsApp Image 2026-07-16 at 04.48.13.jpeg"),
+          url("./../WhatsApp Image 2026-07-16 at 04.48.16.jpeg"),
+          url("./../WhatsApp Image 2026-07-16 at 04.48.17.jpeg"),
+          url("./../WhatsApp Image 2026-07-16 at 04.48.18.jpeg");
+        background-size: cover, cover, cover, cover, cover, cover, cover, cover, cover, cover;
+        background-position:
+          20% 20%, 80% 30%, 30% 70%, 70% 80%, 15% 85%, 85% 15%, 45% 55%, 65% 35%, 25% 45%, 55% 65%;
+        background-repeat:no-repeat;
+        filter: blur(14px) saturate(1.12) contrast(1.03);
+        transform: scale(1.12);
+        opacity: 0.66;
+      }
+
+      /* Soft pink overlay (no multi-color gradients) */
+      body::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        z-index:-1;
+        background:
+          radial-gradient(circle at 25% 15%, rgba(255,180,210,0.45), transparent 50%),
+          radial-gradient(circle at 80% 65%, rgba(255,210,235,0.35), transparent 55%),
+          rgba(255, 214, 231, 0.14);
+        pointer-events:none;
+      }
+
+      #hearts, #confetti{
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 5;
+      }
+
+      .wrap{
+        position:relative;
+        z-index: 10;
+        width:min(1100px, 92vw);
+        display:flex;
+        gap: 22px;
+        align-items: stretch;
+        justify-content:center;
+        flex-wrap: wrap;
+      }
+
+      .card{
+        flex: 1 1 460px;
+        min-width: 320px;
+        background: rgba(255,255,255,0.16);
+        border: 1px solid rgba(255,255,255,0.30);
+        border-radius: 26px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 26px 90px rgba(0,0,0,0.25);
+        padding: 26px;
+        overflow:hidden;
+        position:relative;
+      }
+
+      .card::before{
+        content:"";
+        position:absolute;
+        inset:-2px;
+        background:
+          radial-gradient(circle at 10% 10%, rgba(255,255,255,0.25), transparent 45%),
+          radial-gradient(circle at 90% 40%, rgba(255,122,182,0.18), transparent 60%);
+        opacity: 0.9;
+        pointer-events:none;
+      }
+
+      h1{
+        margin:0;
+        position:relative;
+        z-index:2;
+        font-size: clamp(1.6rem, 2.8vw, 2.5rem);
+        color: #ff7ab6;
+        text-shadow: 0 8px 22px rgba(255,90,165,0.24);
+      }
+
+      .sub{
+        position:relative;
+        z-index:2;
+        margin-top: 10px;
+        color: rgba(255,255,255,0.92);
+        font-size: 1.05rem;
+        line-height: 1.35;
+      }
+
+      .actions{
+        position:relative;
+        z-index:2;
+        display:flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        align-items:center;
+        margin-top: 18px;
+      }
+
+      button{
+        appearance:none;
+        border:none;
+        cursor:pointer;
+        padding: 14px 22px;
+        border-radius: 16px;
+        font-family: inherit;
+        font-size: 1.15rem;
+        letter-spacing: 0.2px;
+        transition: transform 0.18s ease, filter 0.18s ease;
+      }
+
+      button:active{ transform: translateY(1px) scale(0.99); }
+
+      #yesBtn{
+        background: var(--pink);
+        color: white;
+        box-shadow: 0 14px 40px rgba(255,90,165,0.25);
+        border: 1px solid rgba(255,255,255,0.25);
+      }
+      #noBtn{
+        background: rgba(255,255,255,0.22);
+        color: rgba(255,255,255,0.95);
+        border: 1px solid rgba(255,255,255,0.38);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      #sparkleBtn{
+        background: rgba(255,255,255,0.18);
+        color: rgba(255,255,255,0.95);
+        border: 1px solid rgba(255,255,255,0.35);
+      }
+      #againBtn{
+        background: rgba(255,255,255,0.18);
+        color: rgba(255,255,255,0.95);
+        border: 1px solid rgba(255,255,255,0.35);
+      }
+
+      #yesBtn:hover, #noBtn:hover, #sparkleBtn:hover{
+        filter: brightness(1.06);
+        transform: translateY(-2px);
+      }
+
+      .polaroids{
+        flex: 1 1 360px;
+        min-width: 320px;
+        display:flex;
+        flex-direction: column;
+        gap: 14px;
+        align-items:center;
+        justify-content:center;
+      }
+
+      .polaroid{
+        width: min(360px, 84vw);
+        background: rgba(255,255,255,0.20);
+        border: 1px solid rgba(255,255,255,0.30);
+        border-radius: 20px;
+        padding: 12px 12px 16px;
+        box-shadow: 0 22px 70px rgba(0,0,0,0.22);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        position:relative;
+        transform: rotate(var(--r, -4deg)) translateY(var(--y, 0px));
+        transition: transform 0.18s ease;
+        cursor: grab;
+        user-select: none;
+      }
+
+      .polaroid img{
+        width:100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 14px;
+        display:block;
+        pointer-events:none;
+      }
+
+      .polaroid .label{
+        margin-top: 10px;
+        text-align:left;
+        color: rgba(255,255,255,0.92);
+        font-size: 0.95rem;
+      }
+
+      .hint{
+        position:relative;
+        z-index:2;
+        margin-top: 14px;
+        color: rgba(255,255,255,0.86);
+      }
+
+      #success{ display:none; }
+
+      @media (max-width: 720px){
+        .wrap{ width: 92vw; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="hearts"></canvas>
+    <canvas id="confetti"></canvas>
+
+    <div class="wrap">
+      <div class="card" id="main">
+        <h1>Do you love me? ❤️</h1>
+        <div class="sub">Move your mouse/tap around — hearts will float. Drag the polaroids for extra cute fun.</div>
+
+        <div class="actions">
+          <button id="yesBtn">Yes!</button>
+          <button id="noBtn">No</button>
+          <button id="sparkleBtn">Sparkle</button>
+        </div>
+
+        <div class="hint">✨ Bonus: hover “No” to make it run away.</div>
+      </div>
+
+      <div class="polaroids">
+        <div class="polaroid" id="p1" style="--r:-7deg; --y:0px;">
+          <img alt="Polaroid 1" src="./../WhatsApp Image 2026-07-16 at 04.47.44.jpeg" />
+          <div class="label">A tiny memory</div>
+        </div>
+        <div class="polaroid" id="p2" style="--r:5deg; --y:0px;">
+          <img alt="Polaroid 2" src="./../WhatsApp Image 2026-07-16 at 04.48.16.jpeg" />
+          <div class="label">Another sweet moment</div>
+        </div>
+      </div>
+
+      <div class="card" id="success">
+        <h1>I knew it! 💗</h1>
+        <div class="sub">You made my day.</div>
+        <div class="actions">
+          <button id="againBtn">Again</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
